@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Margins and Paddings -->
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="margin_large">24dp</dimen>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_medium">16dp</dimen>
+    <dimen name="padding_large">24dp</dimen>
+    <!-- Card dimensions -->
+    <dimen name="card_corner_radius">12dp</dimen>
+    <dimen name="card_elevation">4dp</dimen>
+    <!-- Featured card -->
+    <dimen name="featured_card_height">200dp</dimen>
+    <dimen name="featured_card_radius">16dp</dimen>
+    <!-- Category items -->
+    <dimen name="category_item_width">120dp</dimen>
+    <dimen name="category_item_height">160dp</dimen>
+    <dimen name="category_icon_size">60dp</dimen>
+    <dimen name="category_small_icon_size">24dp</dimen>
+    <!-- Text sizes -->
+    <dimen name="text_size_small">12sp</dimen>
+    <dimen name="text_size_medium">14sp</dimen>
+    <dimen name="text_size_large">16sp</dimen>
+    <dimen name="text_size_title">18sp</dimen>
+    <!-- Collection info -->
+    <dimen name="collection_card_height">120dp</dimen>
+    <dimen name="collection_icon_size">48dp</dimen>
+</resources>
