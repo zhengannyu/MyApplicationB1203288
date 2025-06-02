@@ -69,10 +69,10 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         // 3. 按到關於我們時，會跳到另外一個頁面
-        //cardAboutUs.setOnClickListener {
-        //    val intent = Intent(this, AboutWeActivity::class.java) //連結分組部分
-        //    startActivity(intent)
-        //}
+        cardAboutUs.setOnClickListener {
+            val intent = Intent(this, AboutWeActivity::class.java) //連結分組部分
+            startActivity(intent)
+        }
 
         // 隱私條款按鈕的點擊事件
         cardPrivacyPolicy.setOnClickListener {

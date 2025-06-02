@@ -32,10 +32,10 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, favorite::class.java)
             startActivity(intent)
         }
-        //navDiscover.setOnClickListener {
-        //    val intent = Intent(this, map::class.java)
-        //    startActivity(intent)
-        //}
+        navDiscover.setOnClickListener {
+            val intent = Intent(this, MapsActivity::class.java)
+            startActivity(intent)
+        }
         navSettings.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
