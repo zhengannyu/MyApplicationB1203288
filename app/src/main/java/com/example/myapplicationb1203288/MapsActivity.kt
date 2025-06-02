@@ -34,7 +34,14 @@ import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import android.view.View
+import okhttp3.OkHttpClient
+import java.security.cert.X509Certificate
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
+import okhttp3.logging.HttpLoggingInterceptor
 import android.util.Log
+
 
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -94,12 +101,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED) {
+
             ActivityCompat.requestPermissions(
                 this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 LOCATION_PERMISSION_REQUEST_CODE
             )
-        } else enableUserLocation()
+        } else {
+            enableUserLocation() // ← 有權限就馬上抓位置
+        }
     }
+
 
     private fun enableUserLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -119,7 +130,36 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun fetchWeatherWithLocation(userLat: Double, userLng: Double) {
-        val retrofit = getRetrofitWithGRCA(this)
+        val loggingInterceptor = HttpLoggingInterceptor { message ->
+            Log.d("OkHttp", message)
+        }.apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+
+        val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
+            override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
+            override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
+            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+        })
+
+        val sslContext = SSLContext.getInstance("TLS")
+        sslContext.init(null, trustAllCerts, java.security.SecureRandom())
+
+        val okHttpClient = OkHttpClient.Builder()
+            .sslSocketFactory(sslContext.socketFactory, trustAllCerts[0] as X509TrustManager)
+            .hostnameVerifier { _, _ -> true }
+            .addInterceptor(loggingInterceptor)
+            .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+            .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+            .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+            .retryOnConnectionFailure(true)
+            .build()
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://opendata.cwa.gov.tw/api/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
         val service = retrofit.create(WeatherService::class.java)
 
         lifecycleScope.launch {
